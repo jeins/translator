@@ -1,4 +1,5 @@
 var path = require('path');
+var HtmlWebpackPlugin = require("html-webpack-plugin");
 
 var SRC_DIR = path.resolve(__dirname, 'src');
 
@@ -15,16 +16,32 @@ var config = {
         }
     },
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.js$/,
                 include: SRC_DIR,
                 exclude: /(node_modules)/,
                 loader: 'babel-loader',
                 query: { presets: ['es2015', 'react'], plugins: ["transform-decorators-legacy", "transform-class-properties"] }
+            },
+            {
+                test: /\.scss|css$/,
+                use: [
+                    "style-loader",
+                    "css-loader",
+                    "postcss-loader",
+                    "resolve-url-loader",
+                    "sass-loader?sourceMap"
+                ]
             }
         ]
-    }
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            hash: false,
+            template: "./src/index.html"
+        })
+    ]
 };
 
 module.exports = config;

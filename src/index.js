@@ -1,8 +1,7 @@
+import './styles/main.scss';
 import React from 'react';
 import {render} from 'react-dom';
+import Camera from './components/Camera';
 
-const App = () => {
-	return ();
-};
 
-render(<App />, document.getElementById('app'));
+render(<Camera />, document.getElementById('app'));
