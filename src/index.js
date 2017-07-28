@@ -1,7 +1,7 @@
 import './styles/main.scss';
 import React from 'react';
 import {render} from 'react-dom';
-import Camera from './components/Camera';
+import Main from './components/Main';
 
 
-render(<Camera />, document.getElementById('app'));
+render(<Main />, document.getElementById('app'));

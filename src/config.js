@@ -1,4 +1,4 @@
-const googleApiKey = 'xxxx';
+const googleApiKey = 'AIzaSyC_3Tlf4gbn0JRSau46ahg65nu6FXOUtVw';
 
 export const apiUrls = {
   cloudVision: 'https://vision.googleapis.com/v1/images:annotate?key=' + googleApiKey,
@@ -8,5 +8,3 @@ export const apiUrls = {
 export const langList = [
   'german', 'english'
 ];
-
-AIzaSyCOIMPXM3NqGukXt0q2rwtTmCk50CVQ_Yc
