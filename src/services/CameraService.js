@@ -7,7 +7,33 @@ const sourceSupport = sourceEnumSupport || streamTrackSupport;
 
 class CameraService{
 	@observable source;
-	@observable test = "asd";
+
+	@action
+	activateCamera(){
+		let videoSrc = {
+			optional: [{sourceId: sourceEnumSupport ? this.source.deviceId : this.source.id}]
+		};
+		let constraints = {
+			audio: false,
+			video: this.source ? videoSrc : true
+		};
+		
+		navigator.getUserMedia(constraints, (stream) => {
+			if(sourceEnumSupport && !this.source){
+				setTimeout(()=>{
+					stream.getTracks().forEach(track => track.stop());
+					this.setEnumerateDevices();
+				}, 1);
+
+				return;
+			}
+			
+			const canvas = document.getElementById('canvas');
+			const videoEl = document.getElementById('video');
+
+			videoEl.srcObject = stream;
+		}, () => alert("error"));
+	}
 
 	@action
 	async setEnumerateDevices() {

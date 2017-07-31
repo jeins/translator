@@ -25,6 +25,8 @@ class Main extends Component {
 			.then((source) => {
 				if (!this.hasUserMedia() || !source) {
 					this.setState({hasUserMedia: false});
+				} else{
+					this.camera.activateCamera();
 				}
 			});
 	}
