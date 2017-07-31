@@ -1,40 +1,53 @@
-import React, {Component} from 'react';
-import {Provider} from 'mobx-react';
+import React, { Component } from 'react';
+import { Provider } from 'mobx-react';
+import {observer, inject} from 'mobx-react';
 
-import NoCamera from './NoCamera';
 import Translate from '../services/Translate';
+import CameraService from '../services/CameraService';
+import CameraReady from './CameraReady';
+import ErrorNoCamera from './ErrorNoCamera';
 
-function hasGetUserMedia(){
-	return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
-    		  navigator.mozGetUserMedia || navigator.msGetUserMedia); 
-}
-
-class Main extends Component{
-	constructor(){
+@observer
+class Main extends Component {
+	constructor() {
 		super();
 
 		this.state = {
-			hasUserMedia: false
+			hasUserMedia: true
 		};
+
+		this.camera = new CameraService();
 	}
 
-	componentDidMount(){
-		if(!hasGetUserMedia()) return;
+	componentDidMount() {
+		this.camera
+			.setEnumerateDevices()
+			.then((source) => {
+				if (!this.hasUserMedia() || !source) {
+					this.setState({hasUserMedia: false});
+				}
+			});
 	}
-	
-	render(){
-        const translate = new Translate();
-		if(!this.state.hasUserMedia){
-			return(
-                <Provider translate={translate}>
-				    <NoCamera />
-                </Provider>
+
+	hasUserMedia() {
+		const fn = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+		return fn ? fn.bind(navigator) : null;
+	}
+
+	render() {
+		const translate = new Translate();
+		
+		if (!this.state.hasUserMedia) {
+			return (
+				<ErrorNoCamera />
 			);
-		} else{
-            return(
-                <Camera />
-            );
-        }
+		} else {
+			return (
+				<Provider translate={translate}>
+					<CameraReady />
+				</Provider>
+			);
+		}
 	}
 }
 

@@ -14,7 +14,6 @@ module.exports = {
         chunkFilename: "[name].min.js"
     },
     devtool: "cheap-module-source-map",
-    disableHostCheck: true,
     module: {
         rules: [
             {
