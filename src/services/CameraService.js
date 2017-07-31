@@ -25,6 +25,7 @@ class CameraService{
 					const tmpSrc = sources[i];
 
 					if(tmpSrc.kind === 'videoinput'){
+						/*
 						if(typeof tmpSrc.getCapabilities === 'function'){
 							let capabilities = tmpSrc.getCapabilities();
 
@@ -37,7 +38,9 @@ class CameraService{
 						if(/facing back/i.test(tmpSrc.label)){
 							source = tmpSrc;
 							break;
-						}
+						}*/
+						source = tmpSrc;
+						break;
 					}
 				}
 			} else{

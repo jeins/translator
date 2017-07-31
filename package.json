@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "main": "src/index.js",
   "scripts": {
-    "start": "webpack-dev-server --content-base src/ --inline --hot --history-api-fallback --progress --colors --host 0.0.0.0",
+    "start": "webpack-dev-server --content-base src/ --inline --hot --history-api-fallback --progress --colors",
     "build": "webpack --config webpack-prod.config.js --progress --colors"
   },
   "author": {

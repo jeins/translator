@@ -10,6 +10,9 @@ var config = {
         filename: 'app.min.js'
     },
     devServer: {
+        host: '0.0.0.0',
+        port: 3100,
+        disableHostCheck: true,
         headers: {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
