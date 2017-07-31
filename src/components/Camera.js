@@ -7,11 +7,7 @@ class Camera extends Component{
 	}
 	
 	render(){
-		if(!this.state.hasUserMedia){
-			return(
-				<NoCamera />
-			);
-		}
+		return (<p>hello world</p>)
 	}
 }
 

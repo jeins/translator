@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Provider} from 'mobx-react';
 
 import NoCamera from './NoCamera';
-import Translate from '../stores/Translate';
+import Translate from '../services/Translate';
 
 function hasGetUserMedia(){
 	return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
