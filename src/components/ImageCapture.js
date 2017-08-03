@@ -14,6 +14,7 @@ class ImageCapture extends Component {
         this.translate = new Translate();
 
         this.camera = this.props.camera;
+        this.state = { isStart: true };
     }
 
     captureImage() {
@@ -46,23 +47,30 @@ class ImageCapture extends Component {
         }
 
         let capturedImage = this.camera.canvas.toDataURL(this.camera.screenshotFormat, 1).replace('data:image/jpeg;base64,', '');
+        this.getTextFromCapturedImage(capturedImage);
     }
 
     getTextFromCapturedImage(capturedImage) {
-        this.imageDetector.execFromImageUri(capturedImage).then(({data}) => {
-            let labelAnnotations = data.responses[0].labelAnnotations;
-            this.imageDetector.bestResult = labelAnnotations.slice(0, 3);
+        this.imageDetector.exec(capturedImage)
+            .then(
+            ({ data }) => {
+                let labelAnnotations = data.responses[0].labelAnnotations;
+                this.imageDetector.bestResult = labelAnnotations.slice(0, 3);
 
-            this.translate.exec(this.imageDetector.bestResult[0].description);
-        }, (error) => {
-            console.error(error);
-        });
+                this.translate.exec(this.imageDetector.bestResult[0].description);
+
+                this.setState({ isStart: false });
+            }, (error) => {
+                console.error(error);
+            });
     }
 
-    render() {console.log(this.translate.resultText);
+    render() {
         return (
-            <div className='capture-btn' onClick={() => this.getTextFromCapturedImage(null)}>
-
+            <div id="main">
+                {!this.state.isStart && <div className="row"><h2>{this.translate.resultText[0].text}</h2><h4>{this.translate.resultText[0].lang}</h4></div>}
+                <div className='capture-btn' onClick={() => this.captureImage()}></div>
+                {this.state.isStart && this.camera.cameraReady && <h5 className="first-message">aplikasi siap, silakan coba foto object!</h5>}
             </div>
         )
     }

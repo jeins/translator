@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 
 import ErrorNoCamera from './ErrorNoCamera';
+import ImageCapture from './ImageCapture';
 
-@inject('translate')
 @inject('camera')
 @observer
 class CameraReady extends Component {
@@ -12,14 +12,10 @@ class CameraReady extends Component {
 	constructor(props) {
 		super(props);
 
-		this.translate = this.props.translate;
 		this.camera = this.props.camera;
 	}
 
 	componentDidMount() {
-		this.translate.queryText = 'tidur';
-		this.translate.exec();
-
 		this.requestUserMedia();
 		this.setFullScreen();
 	}
@@ -55,25 +51,6 @@ class CameraReady extends Component {
 		} else if ('mediaDevices' in navigator) {
 			navigator.mediaDevices.enumerateDevices()
 				.then((devices) => {
-					/*
-					let tmpCandidate;
-
-					devices.forEach((device) => {
-						if (device.kind === 'audio') {
-							me.camera.audioSource = device.id;
-						} else if (device.kind === 'videoinput') {
-							if (/facing back/i.test(device.label)) {
-								me.camera.videoSource = device.id;
-							} else {
-								tmpCandidate = device.id;
-							}
-						}
-					});
-
-					if (me.camera.videoSource === null) {
-						me.camera.videoSource = tmpCandidate;
-					}
-					*/
 					me.findBestSource(devices);
 					me.setSelectedMediaSource();
 				})
@@ -132,8 +109,8 @@ class CameraReady extends Component {
 
 	setSelectedMediaSource() {
 		const constraints = {
-			video: this.camera.videoSource ? { 
-				optional: [{ sourceId: this.camera.sourceEnumSupport ? this.camera.videoSource.deviceId : this.camera.videoSource.id }] 
+			video: this.camera.videoSource ? {
+				optional: [{ sourceId: this.camera.sourceEnumSupport ? this.camera.videoSource.deviceId : this.camera.videoSource.id }]
 			} : true,
 			audio: false
 		};
@@ -151,6 +128,16 @@ class CameraReady extends Component {
 				this.stream = stream;
 				this.camera.hasUserMedia = true;
 				this.camera.objUrl = src;
+
+				const canvas = document.getElementById('canvas');
+				const videoEl = document.getElementById('video');
+
+				videoEl.srcObject = stream;
+				this.camera.video = videoEl;
+				this.camera.canvas = canvas;
+				this.camera.ctx = canvas.getContext('2d');
+				this.camera.cameraReady = true;
+
 				this.camera.onUserMedia();
 			},
 			(error) => {
@@ -175,19 +162,24 @@ class CameraReady extends Component {
 		console.log(this.camera.hasUserMedia)
 		if (!this.camera.hasUserMedia) {
 			return (
-				<ErrorNoCamera />
+				<div>
+					<ErrorNoCamera />
+				</div>
 			);
 		} else {
 			return (
 				<div>
 					<video
-						className="video"
+						id="video"
 						autoPlay
 						src={this.camera.objUrl}
-						muted={this.camera.muted}
-						style={this.camera.style}
 					></video>
-					<canvas className="canvas" width="640" height="640"></canvas>
+					<canvas
+						id="canvas"
+						width="640"
+						height="640">
+					</canvas>
+					<ImageCapture camera={this.camera} />
 				</div>
 			);
 		}

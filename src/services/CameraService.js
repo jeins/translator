@@ -8,15 +8,20 @@ const csSourceSupport = csSourceEnumSupport || csStreamTrackSupport;
 class CameraService{
 	@observable hasUserMedia = false;
 	@observable allowAudio;
-	@observable muted;
-	@observable className;
 	@observable height;
 	@observable width;
 	@observable onUserMedia: () => {};
 	@observable screenshotFormat;
-	@observable audioSource;
 	@observable videoSource;
 	@observable objUrl;
+	@observable breakPoint;
+	@observable canvasSize;
+	@observable targetPct;
+	@observable targetTop;
+	@observable video;
+	@observable canvas;
+	@observable ctx;
+	@observable cameraReady;
 	@observable sourceSupport = csSourceSupport;
 	@observable streamTrackSupport = csStreamTrackSupport;
 	@observable sourceEnumSupport = csSourceEnumSupport;
@@ -24,14 +29,17 @@ class CameraService{
 	@action
 	setDefaultProps(){
 		this.allowAudio = false;
-		this.muted = true;
-		this.className = '';
 		this.height = 640;
 		this.width = 640;
 		this.screenshotFormat = 'image/jpeg';
 		this.audioSource = null;
 		this.videoSource = null;
 		this.objUrl = null;
+		this.breakPoint = 800;
+		this.canvasSize = 640;
+		this.targetPct = 0.7;
+		this.targetTop = 0.4;
+		this.cameraReady = false;
 	}
 }
 

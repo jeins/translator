@@ -1,30 +1,29 @@
 import axios from 'axios';
-import {observable, action, toJS} from 'mobx';
-import {apiUrls} from '../config';
+import { observable, action, toJS } from 'mobx';
+import { apiUrls } from '../config';
 
-class Translate{
-    @observable sourceLanguage = 'id';
-    @observable targetLanguage = 'de';
-    @observable queryText;    
-    @observable resultText;
-    @observable langMap = {
-        indonesia: 'id',
-        english: 'en',
-        germany: 'de'
-    };
+class Translate {
+    @observable sourceLanguage = 'en';
+    @observable targetLanguages = ['de', 'id'];
+    @observable resultText = [];
 
     @action
-    async exec(){
-        try{
-            let request = {
-                q: this.queryText,
-                source: this.sourceLanguage,
-                target: this.targetLanguage
-            };
-            
-            let {data} = await axios.post(apiUrls.translate, request);
-            this.resultText = data.data.translations[0].translatedText;
-        } catch(err){
+    async exec(queryText) {
+        try {
+            for (let targetLang of this.targetLanguages) {
+                let request = {
+                    q: queryText,
+                    source: this.sourceLanguage,
+                    target: targetLang
+                };
+
+                let { data } = await axios.post(apiUrls.translate, request);
+                this.resultText.push({
+                    lang: targetLang,
+                    text: data.data.translations[0].translatedText
+                });
+            }
+        } catch (err) {
             console.error(err);
         }
     }
