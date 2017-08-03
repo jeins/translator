@@ -1,83 +1,37 @@
 import {observable, action, toJS} from 'mobx';
 
 const { MediaStreamTrack } = window;
-const sourceEnumSupport = navigator.mediaDevices && navigator.mediaDevices.enumerateDevices;
-const streamTrackSupport = MediaStreamTrack && MediaStreamTrack.getSources;
-const sourceSupport = sourceEnumSupport || streamTrackSupport;
+const csSourceEnumSupport = navigator.mediaDevices && navigator.mediaDevices.enumerateDevices;
+const csStreamTrackSupport = MediaStreamTrack && MediaStreamTrack.getSources;
+const csSourceSupport = csSourceEnumSupport || csStreamTrackSupport;
 
 class CameraService{
-	@observable source;
+	@observable hasUserMedia = false;
+	@observable allowAudio;
+	@observable muted;
+	@observable className;
+	@observable height;
+	@observable width;
+	@observable onUserMedia: () => {};
+	@observable screenshotFormat;
+	@observable audioSource;
+	@observable videoSource;
+	@observable objUrl;
+	@observable sourceSupport = csSourceSupport;
+	@observable streamTrackSupport = csStreamTrackSupport;
+	@observable sourceEnumSupport = csSourceEnumSupport;
 
 	@action
-	activateCamera(){
-		let videoSrc = {
-			optional: [{sourceId: sourceEnumSupport ? this.source.deviceId : this.source.id}]
-		};
-		let constraints = {
-			audio: false,
-			video: this.source ? videoSrc : true
-		};
-		
-		navigator.getUserMedia(constraints, (stream) => {
-			if(sourceEnumSupport && !this.source){
-				setTimeout(()=>{
-					stream.getTracks().forEach(track => track.stop());
-					this.setEnumerateDevices();
-				}, 1);
-
-				return;
-			}
-			
-			const canvas = document.getElementById('canvas');
-			const videoEl = document.getElementById('video');
-
-			videoEl.srcObject = stream;
-		}, () => alert("error"));
-	}
-
-	@action
-	async setEnumerateDevices() {
-		let sources = await navigator.mediaDevices.enumerateDevices();
-		return this.findCameraSource(sources);
-	}
-
-	@action
-	findCameraSource(sources){
-		let source = null;
-
-		if(sources && sourceSupport){
-			if(sourceEnumSupport){
-				for(let i=0; i<sources.length; i++){
-					const tmpSrc = sources[i];
-
-					if(tmpSrc.kind === 'videoinput'){
-						/*
-						if(typeof tmpSrc.getCapabilities === 'function'){
-							let capabilities = tmpSrc.getCapabilities();
-
-							if(capabilities && capabilities.facingMode === 'environment'){
-								source = tmpSrc;
-								break;
-							}
-						}
-
-						if(/facing back/i.test(tmpSrc.label)){
-							source = tmpSrc;
-							break;
-						}*/
-						source = tmpSrc;
-						break;
-					}
-				}
-			} else{
-				source = sources.find(s => s.facing === 'environment');
-				if(!source){
-					source = sources.find(s => s.kind === 'video'); 
-				}
-			}
-		}
-
-		return source;
+	setDefaultProps(){
+		this.allowAudio = false;
+		this.muted = true;
+		this.className = '';
+		this.height = 640;
+		this.width = 640;
+		this.screenshotFormat = 'image/jpeg';
+		this.audioSource = null;
+		this.videoSource = null;
+		this.objUrl = null;
 	}
 }
 

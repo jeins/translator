@@ -12,6 +12,7 @@ var config = {
     devServer: {
         host: '0.0.0.0',
         port: 3100,
+        https: true,
         disableHostCheck: true,
         headers: {
             'Access-Control-Allow-Origin': '*',
