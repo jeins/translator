@@ -22,6 +22,7 @@ class CameraService{
 	@observable canvas;
 	@observable ctx;
 	@observable cameraReady;
+	@observable cameraError;
 	@observable sourceSupport = csSourceSupport;
 	@observable streamTrackSupport = csStreamTrackSupport;
 	@observable sourceEnumSupport = csSourceEnumSupport;
@@ -40,6 +41,7 @@ class CameraService{
 		this.targetPct = 0.7;
 		this.targetTop = 0.4;
 		this.cameraReady = false;
+		this.cameraError = false;
 	}
 }
 

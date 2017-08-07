@@ -49,6 +49,7 @@ class CameraReady extends Component {
 		if (this.camera.audioSource && this.camera.videoSource) {
 			this.setSelectedMediaSource();
 		} else if ('mediaDevices' in navigator) {
+			
 			navigator.mediaDevices.enumerateDevices()
 				.then((devices) => {
 					me.findBestSource(devices);
@@ -56,6 +57,7 @@ class CameraReady extends Component {
 				})
 				.catch((error) => {
 					console.error(`${error.name}: ${error.message}`);
+					this.camera.cameraError = true;
 				});
 		} else {
 			MediaStreamTrack.getSources((sources) => {
@@ -120,7 +122,7 @@ class CameraReady extends Component {
 				optional: [{ sourceId: this.camera.audioSource }]
 			};
 		}
-
+		
 		navigator.getUserMedia(constraints,
 			(stream) => {
 				const src = window.URL.createObjectURL(stream);
@@ -142,6 +144,7 @@ class CameraReady extends Component {
 			},
 			(error) => {
 				console.error(`${error.name}: ${error.message}`);
+				this.camera.cameraError = true;
 			}
 		);
 	}
@@ -159,14 +162,13 @@ class CameraReady extends Component {
 	}
 
 	render() {
-		console.log(this.camera.hasUserMedia)
-		if (!this.camera.hasUserMedia) {
+		if (!this.camera.hasUserMedia && this.camera.cameraError) {
 			return (
 				<div>
 					<ErrorNoCamera />
 				</div>
 			);
-		} else {
+		} else if(this.camera.hasUserMedia && !this.camera.cameraError) {
 			return (
 				<div>
 					<video
@@ -182,6 +184,10 @@ class CameraReady extends Component {
 					<ImageCapture camera={this.camera} />
 				</div>
 			);
+		} else {
+			return (
+				<div></div>
+			)
 		}
 	}
 }
