@@ -30,7 +30,7 @@ class ImageDetector {
                 requests: [{
                     image: {
                         source: {
-                            imageUri: "https://storage.googleapis.com/translator99/demo-image.jpg"
+                            imageUri: imageUri
                         }
                     },
                     features: { type: 'LABEL_DETECTION', maxResults: 5 }

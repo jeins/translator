@@ -6,7 +6,7 @@ import ImageCapture from './ImageCapture';
 
 @inject('camera')
 @observer
-class CameraReady extends Component {
+class StartCamera extends Component {
 	state = {};
 
 	constructor(props) {
@@ -207,4 +207,4 @@ class CameraReady extends Component {
 	}
 }
 
-export default CameraReady;
+export default StartCamera;

@@ -3,7 +3,7 @@ import { Provider } from 'mobx-react';
 import { observer, inject } from 'mobx-react';
 
 import CameraService from '../services/CameraService';
-import CameraReady from './CameraReady';
+import StartCamera from './StartCamera';
 
 function hasGetUserMedia() {
 	return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
@@ -31,9 +31,8 @@ class Main extends Component {
 				>
 					<circle />
 				</svg>
-
 				
-				<CameraReady camera={this.camera} />
+				<StartCamera camera={this.camera} />
 			</div>
 		)
 	}
