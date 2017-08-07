@@ -2,18 +2,15 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { findDOMNode } from 'react-dom';
 
-import Translate from '../services/Translate';
-import ImageDetector from '../services/ImageDetector';
-
 @observer
 class ImageCapture extends Component {
     constructor(props) {
         super(props);
 
-        this.imageDetector = new ImageDetector();
-        this.translate = new Translate();
-
+        this.imageDetector = this.props.imageDetector;
+        this.translate = this.props.translate;
         this.camera = this.props.camera;
+
         this.state = { isStart: true };
     }
 

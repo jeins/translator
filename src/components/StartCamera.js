@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 
-import ErrorNoCamera from './ErrorNoCamera';
 import ImageCapture from './ImageCapture';
 
 @inject('camera')
@@ -127,12 +126,12 @@ class StartCamera extends Component {
 				optional: [{ sourceId: this.camera.audioSource }]
 			};
 		}
-		
+
 		navigator.getUserMedia(constraints,
 			(stream) => {
-				if(!this.camera.videoSource && this.camera.sourceEnumSupport && !this.state.attemptedTwice){
-					this.setState({attemptedTwice : true});
-					setTimeout(()=>{
+				if (!this.camera.videoSource && this.camera.sourceEnumSupport && !this.state.attemptedTwice) {
+					this.setState({ attemptedTwice: true });
+					setTimeout(() => {
 						stream.getTracks().forEach(track => track.stop());
 						this.enumerateDevices();
 					}, 1);
@@ -180,7 +179,11 @@ class StartCamera extends Component {
 		if (!this.camera.hasUserMedia && this.camera.cameraError) {
 			return (
 				<div>
-					<ErrorNoCamera />
+					<h1 className="error-no-camera">
+						Your device doesnt have support for browser camera!
+						<br /><br />
+						Please try it on your desktop, Android or iOS device.
+					</h1>
 				</div>
 			);
 		} else if (this.camera.hasUserMedia && !this.camera.cameraError) {
@@ -196,7 +199,8 @@ class StartCamera extends Component {
 						width="640"
 						height="640">
 					</canvas>
-					<ImageCapture camera={this.camera} />
+
+					<ImageCapture camera={this.camera} translate={this.props.translate} imageDetector={this.props.imageDetector} />
 				</div>
 			);
 		} else {

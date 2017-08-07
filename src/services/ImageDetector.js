@@ -4,6 +4,7 @@ import { apiUrls } from '../config';
 
 class ImageDetector {
     @observable bestResult;
+    @observable error = false;
 
     @action
     async exec(capturedImage) {
@@ -19,6 +20,8 @@ class ImageDetector {
 
             return await axios.post(apiUrls.cloudVision, request);
         } catch (err) {
+            this.error = true;
+            this.camera.isSnapping = false;
             console.error(err);
         }
     }
@@ -39,6 +42,7 @@ class ImageDetector {
 
             return await axios.post(apiUrls.cloudVision, request);
         } catch (err) {
+            this.error = true;
             console.error(err);
         }
     }

@@ -6,6 +6,7 @@ class Translate {
     @observable sourceLanguage = 'en';
     @observable targetLanguages = ['de', 'id'];
     @observable resultText = {};
+    @observable error = false;
 
     @action
     async exec(queryText) {
@@ -21,6 +22,8 @@ class Translate {
                 this.resultText[targetLang] = data.data.translations[0].translatedText;
             }));
         } catch (err) {
+            this.error = true;
+            this.camera.isSnapping = false;
             console.error(err);
         }
     }

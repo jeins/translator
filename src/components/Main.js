@@ -3,6 +3,8 @@ import { Provider } from 'mobx-react';
 import { observer, inject } from 'mobx-react';
 
 import CameraService from '../services/CameraService';
+import Translate from '../services/Translate';
+import ImageDetector from '../services/ImageDetector';
 import StartCamera from './StartCamera';
 
 function hasGetUserMedia() {
@@ -15,12 +17,22 @@ class Main extends Component {
 	constructor() {
 		super();
 
+        this.imageDetector = new ImageDetector();
+        this.translate = new Translate();
 		this.camera = new CameraService();
+
 		this.camera.setDefaultProps();
 	}
 
 	render() {
-		return (
+		if(this.translate.error || this.imageDetector.error){
+			return (
+				<h1 className="error-no-camera">
+					Google API error! coba diperbaiki dulu...
+				</h1>
+			)
+		} else {
+			return (
 			<div>
 				<svg
 					id="loading"
@@ -31,10 +43,11 @@ class Main extends Component {
 				>
 					<circle />
 				</svg>
-				
-				<StartCamera camera={this.camera} />
+
+				<StartCamera camera={this.camera} translate={this.translate} imageDetector={this.imageDetector} />
 			</div>
 		)
+		}
 	}
 }
 
