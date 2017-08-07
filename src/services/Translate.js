@@ -5,12 +5,12 @@ import { apiUrls } from '../config';
 class Translate {
     @observable sourceLanguage = 'en';
     @observable targetLanguages = ['de', 'id'];
-    @observable resultText = [];
+    @observable resultText = {};
 
     @action
     async exec(queryText) {
         try {
-            for (let targetLang of this.targetLanguages) {
+            return await Promise.all(this.targetLanguages.map(async (targetLang) => {
                 let request = {
                     q: queryText,
                     source: this.sourceLanguage,
@@ -18,11 +18,8 @@ class Translate {
                 };
 
                 let { data } = await axios.post(apiUrls.translate, request);
-                this.resultText.push({
-                    lang: targetLang,
-                    text: data.data.translations[0].translatedText
-                });
-            }
+                this.resultText[targetLang] = data.data.translations[0].translatedText;
+            }));
         } catch (err) {
             console.error(err);
         }

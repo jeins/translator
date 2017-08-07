@@ -23,6 +23,7 @@ class CameraService{
 	@observable ctx;
 	@observable cameraReady;
 	@observable cameraError;
+	@observable isSnapping;
 	@observable sourceSupport = csSourceSupport;
 	@observable streamTrackSupport = csStreamTrackSupport;
 	@observable sourceEnumSupport = csSourceEnumSupport;
@@ -42,6 +43,7 @@ class CameraService{
 		this.targetTop = 0.4;
 		this.cameraReady = false;
 		this.cameraError = false;
+		this.isSnapping = false;
 	}
 }
 

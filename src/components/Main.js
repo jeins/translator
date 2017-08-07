@@ -21,7 +21,20 @@ class Main extends Component {
 
 	render() {
 		return (
-			<CameraReady camera={this.camera} />
+			<div>
+				<svg
+					id="loading"
+					className={this.camera.isSnapping ? 'active' : ''}
+					width="65px"
+					height="65px"
+					viewBox="0 0 66 66"
+				>
+					<circle />
+				</svg>
+
+				
+				<CameraReady camera={this.camera} />
+			</div>
 		)
 	}
 }
