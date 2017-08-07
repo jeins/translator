@@ -1,5 +1,5 @@
 # [Object Translator DE-ID](https://translator.mjuan.info)
-[Live Demo](https://translator.mjuan.info)
+[Live Demo (used Android / iOS)](https://translator.mjuan.info)
 
 ![](https://mjuan.info/images/translator.png)
 ---
