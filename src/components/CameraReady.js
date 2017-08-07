@@ -13,6 +13,7 @@ class CameraReady extends Component {
 		super(props);
 
 		this.camera = this.props.camera;
+		this.state.attemptedTwice = false;
 	}
 
 	componentDidMount() {
@@ -49,16 +50,7 @@ class CameraReady extends Component {
 		if (this.camera.audioSource && this.camera.videoSource) {
 			this.setSelectedMediaSource();
 		} else if ('mediaDevices' in navigator) {
-			
-			navigator.mediaDevices.enumerateDevices()
-				.then((devices) => {
-					me.findBestSource(devices);
-					me.setSelectedMediaSource();
-				})
-				.catch((error) => {
-					console.error(`${error.name}: ${error.message}`);
-					this.camera.cameraError = true;
-				});
+			this.enumerateDevices();
 		} else {
 			MediaStreamTrack.getSources((sources) => {
 				sources.forEach((source) => {
@@ -74,6 +66,19 @@ class CameraReady extends Component {
 		}
 	}
 
+	enumerateDevices() {
+		let me = this;
+		navigator.mediaDevices.enumerateDevices()
+			.then((devices) => {
+				me.findBestSource(devices);
+				me.setSelectedMediaSource();
+			})
+			.catch((error) => {
+				console.error(`${error.name}: ${error.message}`);
+				this.camera.cameraError = true;
+			});
+	}
+
 	findBestSource(sources) {
 		let source = null;
 
@@ -84,24 +89,24 @@ class CameraReady extends Component {
 
 					if (candidate.kind === 'videoinput') {
 						if (typeof candidate.getCapabilities === 'function') {
-							const capabilities = candidate.getCapabilities()
+							const capabilities = candidate.getCapabilities();
 
 							if (capabilities && capabilities.facingMode === 'environment') {
-								source = candidate
-								break
+								source = candidate;
+								break;
 							}
 						}
 
 						if (/facing back/i.test(candidate.label)) {
-							source = candidate
-							break
+							source = candidate;
+							break;
 						}
 					}
 				}
 			} else {
 				source = sources.find(s => s.facing === 'environment');
 				if (!source) {
-					source = sources.find(s => s.kind === 'video')
+					source = sources.find(s => s.kind === 'video');
 				}
 			}
 		}
@@ -125,6 +130,16 @@ class CameraReady extends Component {
 		
 		navigator.getUserMedia(constraints,
 			(stream) => {
+				if(!this.camera.videoSource && this.camera.sourceEnumSupport && !this.state.attemptedTwice){
+					this.setState({attemptedTwice : true});
+					setTimeout(()=>{
+						stream.getTracks().forEach(track => track.stop());
+						this.enumerateDevices();
+					}, 1);
+
+					return;
+				}
+
 				const src = window.URL.createObjectURL(stream);
 
 				this.stream = stream;
@@ -168,7 +183,7 @@ class CameraReady extends Component {
 					<ErrorNoCamera />
 				</div>
 			);
-		} else if(this.camera.hasUserMedia && !this.camera.cameraError) {
+		} else if (this.camera.hasUserMedia && !this.camera.cameraError) {
 			return (
 				<div>
 					<video
